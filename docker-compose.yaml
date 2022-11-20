@@ -2,7 +2,7 @@ version: '3'
 
 services:
   web:
-    image: cr.yandex/crped8mo5jtkn5mldmbq/cat-server
+    image: cr.yandex/crped8mo5jtkn5mldmbq/cat-server:cat-server
     ports:
       - "80:80"
     depends_on:
