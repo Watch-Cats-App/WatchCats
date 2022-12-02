@@ -1,0 +1,29 @@
+.post {
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    border: 2px solid #1976d2;
+    margin-top: 15px;
+    justify-content: space-between;
+    align-items: center;
+    min-width: 650px;
+    max-width: 1000px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.post:hover {
+    box-shadow: 5px 5px 8px rgba(154, 147, 140, 0.5), 2px 2px 6px rgba(255, 255, 255, 1);
+}
+
+.post__content {
+    display: flex;
+    align-self: flex-start;
+}
+
+.post__btns {
+    width: 80%;
+    display: flex;
+    margin: 10px;
+    justify-content: space-between;
+}

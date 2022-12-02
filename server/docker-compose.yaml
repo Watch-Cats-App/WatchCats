@@ -4,7 +4,7 @@ services:
   web:
     image: cr.yandex/crped8mo5jtkn5mldmbq/cat-server:cat-server-1.0
     ports:
-      - "80:80"
+      - "1000:80"
     depends_on:
       - db
   db:
