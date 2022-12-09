@@ -8,12 +8,12 @@ WORKDIR /usr/src/app
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# install dependencies for PostgreSQL
-RUN apk update \
-    && apk add postgresql-dev gcc python3-dev musl-dev
+# # install dependencies for PostgreSQL
+# RUN apk update \
+#     && apk add postgresql-dev gcc python3-dev musl-dev
 
 # install dependencies
-RUN pip install --upgrade pip
+# RUN pip install --upgrade pip
 COPY ./requirements.txt .
 RUN pip install -r requirements.txt
 
@@ -22,4 +22,4 @@ COPY . .
 
 # collect static files and run server (Django)
 # CMD python manage.py collectstatic --noinput && gunicorn config.asgi:application -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
-CMD flask run --host=0.0.0.0 --port=80
+CMD flask run --host=0.0.0.0 --port=1000

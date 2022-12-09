@@ -1,10 +1,16 @@
 version: '3'
 
 services:
+  client:
+    image: cr.yandex/crped8mo5jtkn5mldmbq/cat-server:cat-client-1.0
+    ports:
+      - "3000:3000"
+    depends_on:
+      - web
   web:
     image: cr.yandex/crped8mo5jtkn5mldmbq/cat-server:cat-server-1.0
     ports:
-      - "1000:80"
+      - "1000:1000"
     depends_on:
       - db
   db:
