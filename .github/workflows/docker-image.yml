@@ -16,7 +16,7 @@ jobs:
     - uses: actions/checkout@v3
     - name: Build the Docker image
       run: |
-        echo '${{ secrets.YANDEX_CLOUD_SERVICE_KEY }}' | docker login \
+        echo ${{ secrets.YANDEX_CLOUD_SERVICE_KEY }} | docker login \
           --username json_key \
           --password-stdin \
           cr.yandex
