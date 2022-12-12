@@ -1,0 +1,33 @@
+name: Build and deploy client
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - client/**
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - client/**
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
+      run: |
+        cd ./client
+        docker build -t cat-client:1.0 .
+        docker tag cat-client:1.0 cr.yandex/crped8mo5jtkn5mldmbq/cat-server:cat-client-1.0
+        echo '${{ secrets.YANDEX_CLOUD_SERVICE_KEY }}' | docker login --username json_key --password-stdin cr.yandex
+        docker push cr.yandex/crped8mo5jtkn5mldmbq/cat-server:cat-client-1.0
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@v0.1.6
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        port: 22
+        script: docker-compose -f docker-compose.yaml pull && docker-compose -f docker-compose.yaml up -d
