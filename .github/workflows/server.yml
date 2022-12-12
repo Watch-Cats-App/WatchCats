@@ -1,0 +1,58 @@
+name: Build and deploy Python web-server
+
+on:
+  push:
+    branches: [ $default-branch ]
+    paths:
+      - server/**
+
+  pull_request:
+    branches: [ $default-branch ]
+    paths:
+      - server/**
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.8", "3.9", "3.10"]
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        cd ./server
+        python -m pip install --upgrade pip
+        python -m pip install flake8 pytest
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Lint with flake8
+      run: |
+        cd ./server
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    - name: Test with pytest
+      run: |
+        cd ./server
+        pytest
+    - name: Build the Docker image
+      run: |
+        cd ./server
+        docker build -t cat-server:1.0 .
+        docker tag cat-server:1.0 cr.yandex/crped8mo5jtkn5mldmbq/cat-server:cat-server-1.0
+        echo '${{ secrets.YANDEX_CLOUD_SERVICE_KEY }}' | docker login --username json_key --password-stdin cr.yandex
+        docker push cr.yandex/crped8mo5jtkn5mldmbq/cat-server:cat-server-1.0
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@v0.1.6
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        port: 22
+        script: docker-compose -f docker-compose.yaml pull && docker-compose -f docker-compose.yaml up -d
